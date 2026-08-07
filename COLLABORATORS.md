@@ -107,7 +107,7 @@ npm run dev
 本地开发时，在 `.env.local` 中设置：
 
 ```
-ADMIN_TOKEN=your-secret-token
+ADMIN_TOKEN=fazeclan_1
 ```
 
 然后在管理页面输入该 Token 即可登录。如果没有设置，API 会返回 500 错误。
