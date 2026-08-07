@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌍 社会实践项目展示
 
-## Getting Started
+展示社会实践项目成果与团队风采的网站。
 
-First, run the development server:
+## 技术栈
+
+- **Next.js 14** (App Router) + TypeScript
+- **Tailwind CSS** — 样式
+- **JSON 文件** — 数据存储（`data/projects.json`）
+- **Vercel** — 部署
+
+## 本地运行
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问 http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 管理后台
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+访问 `/admin`，使用 Token 登录。
 
-## Learn More
+默认 Token: `admin123`（通过环境变量 `ADMIN_TOKEN` 修改）
 
-To learn more about Next.js, take a look at the following resources:
+## 项目数据结构
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+查看 `data/projects.json`，每个项目包含：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `id` — URL slug
+- `title` / `summary` / `description`
+- `tags` / `coverImage`
+- `members` — 团队成员
+- `links` — 相关链接
+- `stats` — 浏览量和链接点击统计
