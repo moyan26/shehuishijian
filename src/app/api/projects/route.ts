@@ -4,7 +4,7 @@ import { getAllProjects, createProject } from "@/lib/data";
 /** GET /api/projects — 获取所有项目 */
 export async function GET() {
   try {
-    const projects = getAllProjects();
+    const projects = await getAllProjects();
     return NextResponse.json({ projects });
   } catch (error) {
     return NextResponse.json(
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const project = createProject({
+    const project = await createProject({
       title: body.title,
       summary: body.summary,
       description: body.description,

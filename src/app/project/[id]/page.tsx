@@ -8,18 +8,19 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-/** 构建时生成所有项目页面 */
+/** 构建时生成所有项目页面（从 KV 读取项目列表） */
 export async function generateStaticParams() {
-  const { projects } = await import("@/lib/data").then((m) => {
-    const data = m.readProjects();
-    return data;
-  });
-  return projects.map((p) => ({ id: p.id }));
+  try {
+    const projects = await getAllProjects();
+    return projects.map((p) => ({ id: p.id }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const project = getProjectById(id);
+  const project = await getProjectById(id);
   if (!project) return { title: "项目不存在" };
   return {
     title: `${project.title} — 社会实践`,
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectDetailPage({ params }: Props) {
   const { id } = await params;
-  const project = getProjectById(id);
+  const project = await getProjectById(id);
 
   if (!project) {
     notFound();
@@ -151,7 +152,10 @@ export default async function ProjectDetailPage({ params }: Props) {
       )}
 
       {/* 客户端组件：记录浏览量和点击量 */}
-      <DetailClient projectId={project.id} linkLabels={project.links.map(l => l.label)} />
+      <DetailClient
+        projectId={project.id}
+        linkLabels={project.links.map((l) => l.label)}
+      />
     </div>
   );
 }

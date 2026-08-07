@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const project = getProjectById(id);
+  const project = await getProjectById(id);
   if (!project) {
     return NextResponse.json({ error: "项目不存在" }, { status: 404 });
   }
@@ -40,7 +40,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    const updated = updateProject(id, body);
+    const updated = await updateProject(id, body);
     if (!updated) {
       return NextResponse.json({ error: "项目不存在" }, { status: 404 });
     }
@@ -70,7 +70,7 @@ export async function DELETE(
 
   const { id } = await params;
 
-  const deleted = deleteProject(id);
+  const deleted = await deleteProject(id);
   if (!deleted) {
     return NextResponse.json({ error: "项目不存在" }, { status: 404 });
   }

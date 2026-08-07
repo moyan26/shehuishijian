@@ -1,55 +1,104 @@
 import fs from "fs";
 import path from "path";
-import { ProjectsData, Project, ProjectInput } from "./types";
+import { Redis } from "@upstash/redis";
+import { Project, ProjectInput } from "./types";
+
+// ============================================================
+// 本地开发用 JSON 文件存储（没有 Redis 时自动回退）
+// ============================================================
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "projects.json");
 
-/** 确保 data 目录存在 */
 function ensureDataDir(): void {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
 }
 
-/** 读取所有项目数据 */
-export function readProjects(): ProjectsData {
+function readFromFile(): Project[] {
   ensureDataDir();
   if (!fs.existsSync(DATA_FILE)) {
-    const empty: ProjectsData = { projects: [] };
-    fs.writeFileSync(DATA_FILE, JSON.stringify(empty, null, 2), "utf-8");
-    return empty;
+    fs.writeFileSync(
+      DATA_FILE,
+      JSON.stringify({ projects: [] }, null, 2),
+      "utf-8"
+    );
+    return [];
   }
   const raw = fs.readFileSync(DATA_FILE, "utf-8");
-  return JSON.parse(raw) as ProjectsData;
+  const data = JSON.parse(raw);
+  return Array.isArray(data) ? data : (data.projects || []);
 }
 
-/** 写入项目数据 */
-export function writeProjects(data: ProjectsData): void {
+function writeToFile(projects: Project[]): void {
   ensureDataDir();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+  fs.writeFileSync(DATA_FILE, JSON.stringify(projects, null, 2), "utf-8");
 }
+
+// ============================================================
+// Upstash Redis（仅在生产环境可用时使用）
+// ============================================================
+
+function hasRedis(): boolean {
+  return !!(
+    process.env.KV_REST_API_URL &&
+    process.env.KV_REST_API_TOKEN
+  );
+}
+
+/** 延迟初始化 Redis，避免构建时因缺少环境变量而报错 */
+let _redis: Redis | null = null;
+
+function getRedis(): Redis {
+  if (!_redis) {
+    _redis = new Redis({
+      url: process.env.KV_REST_API_URL!,
+      token: process.env.KV_REST_API_TOKEN!,
+    });
+  }
+  return _redis;
+}
+
+const KV_KEY = "projects";
+
+// ============================================================
+// 公共 API（自动选择存储后端）
+// ============================================================
 
 /** 获取所有项目（按创建时间倒序） */
-export function getAllProjects(): Project[] {
-  const data = readProjects();
-  return data.projects.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+export async function getAllProjects(): Promise<Project[]> {
+  if (hasRedis()) {
+    const redis = getRedis();
+    const data = await redis.get<Project[]>(KV_KEY);
+    const projects = data || [];
+    return projects.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+  const projects = readFromFile();
+  return projects.sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 }
 
 /** 根据 id 获取单个项目 */
-export function getProjectById(id: string): Project | undefined {
-  const data = readProjects();
-  return data.projects.find((p) => p.id === id);
+export async function getProjectById(
+  id: string
+): Promise<Project | undefined> {
+  if (hasRedis()) {
+    const redis = getRedis();
+    const projects = (await redis.get<Project[]>(KV_KEY)) || [];
+    return projects.find((p) => p.id === id);
+  }
+  return readFromFile().find((p) => p.id === id);
 }
 
 /** 新增项目 */
-export function createProject(input: ProjectInput): Project {
-  const data = readProjects();
+export async function createProject(input: ProjectInput): Promise<Project> {
   const now = new Date().toISOString();
-
-  // 生成 URL 友好的 id
   const id = generateSlug(input.title);
 
   const project: Project = {
@@ -60,70 +109,131 @@ export function createProject(input: ProjectInput): Project {
     updatedAt: now,
   };
 
-  data.projects.push(project);
-  writeProjects(data);
+  if (hasRedis()) {
+    const redis = getRedis();
+    const projects = (await redis.get<Project[]>(KV_KEY)) || [];
+    projects.push(project);
+    await redis.set(KV_KEY, projects);
+    return project;
+  }
+
+  const projects = readFromFile();
+  projects.push(project);
+  writeToFile(projects);
   return project;
 }
 
 /** 更新项目 */
-export function updateProject(
+export async function updateProject(
   id: string,
   input: Partial<ProjectInput>
-): Project | null {
-  const data = readProjects();
-  const index = data.projects.findIndex((p) => p.id === id);
+): Promise<Project | null> {
+  if (hasRedis()) {
+    const redis = getRedis();
+    const projects = (await redis.get<Project[]>(KV_KEY)) || [];
+    const index = projects.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+
+    projects[index] = {
+      ...projects[index],
+      ...input,
+      id: projects[index].id,
+      stats: projects[index].stats,
+      createdAt: projects[index].createdAt,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await redis.set(KV_KEY, projects);
+    return projects[index];
+  }
+
+  const projects = readFromFile();
+  const index = projects.findIndex((p) => p.id === id);
   if (index === -1) return null;
 
-  const updated: Project = {
-    ...data.projects[index],
+  projects[index] = {
+    ...projects[index],
     ...input,
-    id: data.projects[index].id, // id 不可变
-    stats: data.projects[index].stats, // stats 保持不变
-    createdAt: data.projects[index].createdAt, // 创建时间不变
+    id: projects[index].id,
+    stats: projects[index].stats,
+    createdAt: projects[index].createdAt,
     updatedAt: new Date().toISOString(),
   };
 
-  data.projects[index] = updated;
-  writeProjects(data);
-  return updated;
+  writeToFile(projects);
+  return projects[index];
 }
 
 /** 删除项目 */
-export function deleteProject(id: string): boolean {
-  const data = readProjects();
-  const index = data.projects.findIndex((p) => p.id === id);
-  if (index === -1) return false;
+export async function deleteProject(id: string): Promise<boolean> {
+  if (hasRedis()) {
+    const redis = getRedis();
+    const projects = (await redis.get<Project[]>(KV_KEY)) || [];
+    const index = projects.findIndex((p) => p.id === id);
+    if (index === -1) return false;
+    projects.splice(index, 1);
+    await redis.set(KV_KEY, projects);
+    return true;
+  }
 
-  data.projects.splice(index, 1);
-  writeProjects(data);
+  const projects = readFromFile();
+  const index = projects.findIndex((p) => p.id === id);
+  if (index === -1) return false;
+  projects.splice(index, 1);
+  writeToFile(projects);
   return true;
 }
 
 /** 增加项目浏览量 */
-export function incrementViews(id: string): void {
-  const data = readProjects();
-  const project = data.projects.find((p) => p.id === id);
+export async function incrementViews(id: string): Promise<void> {
+  if (hasRedis()) {
+    const redis = getRedis();
+    const projects = (await redis.get<Project[]>(KV_KEY)) || [];
+    const project = projects.find((p) => p.id === id);
+    if (project) {
+      project.stats.views += 1;
+      await redis.set(KV_KEY, projects);
+    }
+    return;
+  }
+
+  const projects = readFromFile();
+  const project = projects.find((p) => p.id === id);
   if (project) {
     project.stats.views += 1;
-    writeProjects(data);
+    writeToFile(projects);
   }
 }
 
 /** 增加链接点击量 */
-export function incrementLinkClick(id: string, linkLabel: string): void {
-  const data = readProjects();
-  const project = data.projects.find((p) => p.id === id);
+export async function incrementLinkClick(
+  id: string,
+  linkLabel: string
+): Promise<void> {
+  if (hasRedis()) {
+    const redis = getRedis();
+    const projects = (await redis.get<Project[]>(KV_KEY)) || [];
+    const project = projects.find((p) => p.id === id);
+    if (project) {
+      project.stats.linkClicks[linkLabel] =
+        (project.stats.linkClicks[linkLabel] || 0) + 1;
+      await redis.set(KV_KEY, projects);
+    }
+    return;
+  }
+
+  const projects = readFromFile();
+  const project = projects.find((p) => p.id === id);
   if (project) {
     project.stats.linkClicks[linkLabel] =
       (project.stats.linkClicks[linkLabel] || 0) + 1;
-    writeProjects(data);
+    writeToFile(projects);
   }
 }
 
-/** 根据中文标题生成 URL slug（简单拼音/英文混合） */
+/** 生成唯一 URL slug */
 function generateSlug(title: string): string {
   const now = Date.now();
-  // 简单策略：取标题前几个字 + 时间戳，保证唯一
   const base = title
     .replace(/[^一-龥a-zA-Z0-9]/g, "-")
     .replace(/-+/g, "-")

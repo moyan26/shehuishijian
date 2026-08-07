@@ -1,8 +1,8 @@
 import { getAllProjects } from "@/lib/data";
 import ProjectCard from "@/components/ProjectCard";
 
-export default function HomePage() {
-  const projects = getAllProjects();
+export default async function HomePage() {
+  const projects = await getAllProjects();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">

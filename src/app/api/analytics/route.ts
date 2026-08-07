@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (type === "view") {
-      incrementViews(projectId);
+      await incrementViews(projectId);
     } else if (type === "click") {
       if (!linkLabel) {
         return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-      incrementLinkClick(projectId, linkLabel);
+      await incrementLinkClick(projectId, linkLabel);
     } else {
       return NextResponse.json(
         { error: "type 必须是 view 或 click" },
