@@ -22,7 +22,7 @@ npm run dev
 
 访问 `/admin`，使用 Token 登录。
 
-默认 Token: `admin123`（通过环境变量 `ADMIN_TOKEN` 修改）
+通过环境变量 `ADMIN_TOKEN` 设置管理密钥
 
 ## 项目数据结构
 

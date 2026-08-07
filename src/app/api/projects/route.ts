@@ -18,7 +18,13 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   // 认证检查
   const authHeader = request.headers.get("authorization");
-  const adminToken = process.env.ADMIN_TOKEN || "admin123";
+  const adminToken = process.env.ADMIN_TOKEN;
+  if (!adminToken) {
+    return NextResponse.json(
+      { error: "服务器未配置 ADMIN_TOKEN 环境变量" },
+      { status: 500 }
+    );
+  }
   if (!authHeader || authHeader !== `Bearer ${adminToken}`) {
     return NextResponse.json({ error: "未授权" }, { status: 401 });
   }

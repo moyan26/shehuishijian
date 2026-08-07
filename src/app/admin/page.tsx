@@ -114,7 +114,7 @@ export default function AdminPage() {
           </button>
         </form>
         <p className="text-xs text-gray-400 text-center mt-4">
-          默认密钥: admin123（可通过 ADMIN_TOKEN 环境变量修改）
+          请在环境变量 <code className="bg-gray-100 px-1 rounded">ADMIN_TOKEN</code> 中设置管理密钥
         </p>
       </div>
     );
