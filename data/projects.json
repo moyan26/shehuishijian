@@ -8,42 +8,12 @@
       "coverImage": "/images/qinghai-cover.jpg",
       "tags": ["教育", "乡村", "支教"],
       "members": [
-        {
-          "name": "张三",
-          "role": "队长",
-          "avatar": "",
-          "link": "https://github.com/zhangsan"
-        },
-        {
-          "name": "李四",
-          "role": "教学负责人",
-          "avatar": "",
-          "link": "https://github.com/lisi"
-        },
-        {
-          "name": "王五",
-          "role": "后勤保障",
-          "avatar": "",
-          "link": ""
-        }
+        { "name": "张三", "role": "队长", "avatar": "", "link": "" },
+        { "name": "李四", "role": "教学负责人", "avatar": "", "link": "" },
+        { "name": "王五", "role": "后勤保障", "avatar": "", "link": "" }
       ],
-      "links": [
-        {
-          "label": "GitHub 仓库",
-          "url": "https://github.com/example/qinghai-zhijiao"
-        },
-        {
-          "label": "活动报道",
-          "url": "https://news.example.com/qinghai-zhijiao"
-        }
-      ],
-      "stats": {
-        "views": 156,
-        "linkClicks": {
-          "GitHub 仓库": 42,
-          "活动报道": 28
-        }
-      },
+      "links": [],
+      "stats": { "views": 0, "linkClicks": {} },
       "createdAt": "2024-07-01T00:00:00Z",
       "updatedAt": "2024-07-15T00:00:00Z"
     },
@@ -55,25 +25,10 @@
       "coverImage": "/images/huanbao-cover.jpg",
       "tags": ["环保", "调研", "城市治理"],
       "members": [
-        {
-          "name": "赵六",
-          "role": "项目负责人",
-          "avatar": "",
-          "link": "https://github.com/zhaoliu"
-        }
+        { "name": "赵六", "role": "项目负责人", "avatar": "", "link": "" }
       ],
-      "links": [
-        {
-          "label": "调研报告",
-          "url": "https://example.com/report"
-        }
-      ],
-      "stats": {
-        "views": 89,
-        "linkClicks": {
-          "调研报告": 15
-        }
-      },
+      "links": [],
+      "stats": { "views": 0, "linkClicks": {} },
       "createdAt": "2024-06-15T00:00:00Z",
       "updatedAt": "2024-06-30T00:00:00Z"
     },
@@ -85,36 +40,11 @@
       "coverImage": "",
       "tags": ["科技", "农业", "物联网"],
       "members": [
-        {
-          "name": "孙七",
-          "role": "技术负责人",
-          "avatar": "",
-          "link": "https://github.com/sunqi"
-        },
-        {
-          "name": "周八",
-          "role": "硬件工程师",
-          "avatar": "",
-          "link": ""
-        }
+        { "name": "孙七", "role": "技术负责人", "avatar": "", "link": "" },
+        { "name": "周八", "role": "硬件工程师", "avatar": "", "link": "" }
       ],
-      "links": [
-        {
-          "label": "GitHub 仓库",
-          "url": "https://github.com/example/smart-agri"
-        },
-        {
-          "label": "演示视频",
-          "url": "https://bilibili.com/video/example"
-        }
-      ],
-      "stats": {
-        "views": 210,
-        "linkClicks": {
-          "GitHub 仓库": 67,
-          "演示视频": 53
-        }
-      },
+      "links": [],
+      "stats": { "views": 0, "linkClicks": {} },
       "createdAt": "2024-08-01T00:00:00Z",
       "updatedAt": "2024-08-20T00:00:00Z"
     }
