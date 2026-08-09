@@ -1,55 +1,98 @@
-{
-  "projects": [
-    {
-      "id": "2024-qinghai-zhijiao",
-      "title": "青海支教社会实践",
-      "summary": "为期两周的青海乡村支教活动，以趣味课堂和长期线上陪伴改善当地教育资源。",
-      "description": "项目团队深入青海乡村小学开展支教活动。",
-      "coverImage": "",
-      "category": "乡村振兴",
-      "outcomeTypes": ["调研报告", "视频"],
-      "college": "未来技术学院",
-      "recommended": true,
-      "tags": ["教育", "乡村", "支教"],
-      "members": [{ "name": "张三", "role": "队长" }],
-      "links": [],
-      "stats": { "views": 156, "linkClicks": {} },
-      "createdAt": "2024-07-01T00:00:00Z",
-      "updatedAt": "2024-07-15T00:00:00Z"
+[
+  {
+    "id": "2024-qinghai-zhijiao",
+    "title": "青海支教社会实践",
+    "summary": "为期两周的青海乡村支教活动，以趣味课堂和长期线上陪伴改善当地教育资源。",
+    "description": "项目团队深入青海乡村小学开展支教活动。",
+    "coverImage": "",
+    "category": "乡村振兴",
+    "outcomeTypes": [
+      "调研报告",
+      "视频"
+    ],
+    "college": "未来技术学院",
+    "recommended": true,
+    "tags": [
+      "教育",
+      "乡村",
+      "支教"
+    ],
+    "members": [
+      {
+        "name": "张三",
+        "role": "队长"
+      }
+    ],
+    "links": [],
+    "stats": {
+      "views": 156,
+      "linkClicks": {}
     },
-    {
-      "id": "2024-huanbao-diaoyan",
-      "title": "城市垃圾分类调研",
-      "summary": "走访五个社区，记录垃圾分类实施情况并提出适老化宣传与社区治理建议。",
-      "description": "团队对社区垃圾分类开展问卷与访谈。",
-      "coverImage": "",
-      "category": "社区治理",
-      "outcomeTypes": ["调研报告", "公众号"],
-      "college": "公共卫生学院",
-      "recommended": false,
-      "tags": ["环保", "调研", "城市治理"],
-      "members": [{ "name": "赵六", "role": "项目负责人" }],
-      "links": [],
-      "stats": { "views": 98, "linkClicks": {} },
-      "createdAt": "2024-06-15T00:00:00Z",
-      "updatedAt": "2024-06-30T00:00:00Z"
+    "createdAt": "2024-07-01T00:00:00Z",
+    "updatedAt": "2024-07-15T00:00:00Z"
+  },
+  {
+    "id": "2024-huanbao-diaoyan",
+    "title": "城市垃圾分类调研",
+    "summary": "走访五个社区，记录垃圾分类实施情况并提出适老化宣传与社区治理建议。",
+    "description": "团队对社区垃圾分类开展问卷与访谈。",
+    "coverImage": "",
+    "category": "社区治理",
+    "outcomeTypes": [
+      "调研报告",
+      "公众号"
+    ],
+    "college": "公共卫生学院",
+    "recommended": false,
+    "tags": [
+      "环保",
+      "调研",
+      "城市治理"
+    ],
+    "members": [
+      {
+        "name": "赵六",
+        "role": "项目负责人"
+      }
+    ],
+    "links": [],
+    "stats": {
+      "views": 98,
+      "linkClicks": {}
     },
-    {
-      "id": "2024-keji-nongye",
-      "title": "智慧农业科技助农",
-      "summary": "将物联网环境监测与精准灌溉技术带进大棚，用低成本方案服务农业生产。",
-      "description": "团队开发低成本大棚环境监测系统。",
-      "coverImage": "",
-      "category": "科技公益",
-      "outcomeTypes": ["网站", "调研报告"],
-      "college": "未来技术学院",
-      "recommended": true,
-      "tags": ["科技", "农业", "物联网"],
-      "members": [{ "name": "孙七", "role": "技术负责人" }],
-      "links": [],
-      "stats": { "views": 213, "linkClicks": {} },
-      "createdAt": "2024-08-01T00:00:00Z",
-      "updatedAt": "2024-08-20T00:00:00Z"
-    }
-  ]
-}
+    "createdAt": "2024-06-15T00:00:00Z",
+    "updatedAt": "2024-06-30T00:00:00Z"
+  },
+  {
+    "id": "2024-keji-nongye",
+    "title": "智慧农业科技助农",
+    "summary": "将物联网环境监测与精准灌溉技术带进大棚，用低成本方案服务农业生产。",
+    "description": "团队开发低成本大棚环境监测系统。",
+    "coverImage": "",
+    "category": "科技公益",
+    "outcomeTypes": [
+      "网站",
+      "调研报告"
+    ],
+    "college": "未来技术学院",
+    "recommended": true,
+    "tags": [
+      "科技",
+      "农业",
+      "物联网"
+    ],
+    "members": [
+      {
+        "name": "孙七",
+        "role": "技术负责人"
+      }
+    ],
+    "links": [],
+    "stats": {
+      "views": 215,
+      "linkClicks": {}
+    },
+    "createdAt": "2024-08-01T00:00:00Z",
+    "updatedAt": "2024-08-20T00:00:00Z"
+  }
+]
