@@ -111,11 +111,11 @@ export default function ProjectSquare({ projects }: ProjectSquareProps) {
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索项目名称、关键词或学院" className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-100" />
           </label>
           <select aria-label="成果形式" value={outcome} onChange={(event) => setOutcome(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-teal-500">
-            <option>{ALL}</option>
+            <option value={ALL}>全部成果形式</option>
             {outcomes.map((item) => <option key={item}>{item}</option>)}
           </select>
           <select aria-label="所属学院" value={college} onChange={(event) => setCollege(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-teal-500">
-            <option>{ALL}</option>
+            <option value={ALL}>全部学院</option>
             {colleges.map((item) => <option key={item}>{item}</option>)}
           </select>
           <select aria-label="排序方式" value={sort} onChange={(event) => setSort(event.target.value as SortMode)} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-teal-500">
