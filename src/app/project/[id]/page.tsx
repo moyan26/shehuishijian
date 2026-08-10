@@ -61,6 +61,41 @@ export default async function ProjectDetailPage({ params }: Props) {
       </h1>
       <p className="text-gray-500 mb-4">{project.summary}</p>
 
+      {/* 项目基础信息 */}
+      {(project.category || project.outcomeTypes?.length || project.college) && (
+        <div className="mb-8 grid gap-4 sm:grid-cols-3">
+          {project.category && (
+            <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-2">项目类别</p>
+              <p className="text-sm font-medium text-slate-900">{project.category}</p>
+            </div>
+          )}
+
+          {project.outcomeTypes?.length ? (
+            <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-2">成果形式</p>
+              <div className="flex flex-wrap gap-2">
+                {project.outcomeTypes.map((type) => (
+                  <span
+                    key={type}
+                    className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700"
+                  >
+                    {type}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {project.college && (
+            <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-2">所属学院</p>
+              <p className="text-sm font-medium text-slate-900">{project.college}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 标签 + 统计 */}
       <div className="flex flex-wrap items-center gap-3 mb-8">
         {project.tags.map((tag) => (
