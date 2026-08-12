@@ -44,3 +44,23 @@ export interface AnalyticsEvent {
   type: "view" | "click";
   linkLabel?: string;
 }
+
+export interface ProjectApplication {
+  id: string;
+  projectName: string;
+  college: string;
+  category: string;
+  outcomeTypes: string[];
+  contactName: string;
+  contactInfo: string;
+  summary: string;
+  links: ProjectLink[];
+  note?: string;
+  status: "pending" | "reviewed";
+  createdAt: string;
+}
+
+export type ProjectApplicationInput = Omit<
+  ProjectApplication,
+  "id" | "status" | "createdAt"
+>;

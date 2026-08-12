@@ -1,6 +1,7 @@
 import { getProjectById, getAllProjects } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
 import DetailClient from "./DetailClient";
 
@@ -37,13 +38,14 @@ export default async function ProjectDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#f4f7f5]">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
       {/* 返回 */}
       <Link
-        href="/"
-        className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors"
+        href="/projects"
+        className="mb-6 inline-flex items-center text-sm font-semibold text-slate-500 transition-colors hover:text-teal-700"
       >
-        ← 返回项目列表
+        ← 返回项目广场
       </Link>
 
       {/* 封面 */}
@@ -55,30 +57,42 @@ export default async function ProjectDetailPage({ params }: Props) {
         />
       )}
 
-      {/* 标题区 */}
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">
-        {project.title}
-      </h1>
-      <p className="text-gray-500 mb-4">{project.summary}</p>
+      <section className="mb-8">
+        {project.id === "zhenxiang-xunzong" ? (
+          <div className="mb-4 flex items-center gap-4">
+            <Image src="/zhenxiang-mark.svg" alt="蓁巷拾遗项目标志" width={72} height={72} priority />
+            <div>
+              <p className="eyebrow">示范项目</p>
+              <p className="mt-1 text-xs font-bold text-amber-700">SOUTHEAST UNIVERSITY</p>
+            </div>
+          </div>
+        ) : (
+          <p className="eyebrow mb-3">项目详情</p>
+        )}
+        <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+          {project.title}
+        </h1>
+        <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">{project.summary}</p>
+      </section>
 
       {/* 项目基础信息 */}
       {(project.category || project.outcomeTypes?.length || project.college) && (
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
           {project.category && (
-            <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-2">项目类别</p>
-              <p className="text-sm font-medium text-slate-900">{project.category}</p>
+            <div className="section-card p-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">项目类别</p>
+              <p className="text-sm font-bold text-slate-900">{project.category}</p>
             </div>
           )}
 
           {project.outcomeTypes?.length ? (
-            <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-2">成果形式</p>
+            <div className="section-card p-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">成果形式</p>
               <div className="flex flex-wrap gap-2">
                 {project.outcomeTypes.map((type) => (
                   <span
                     key={type}
-                    className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700"
+                    className="tag-pill"
                   >
                     {type}
                   </span>
@@ -88,9 +102,9 @@ export default async function ProjectDetailPage({ params }: Props) {
           ) : null}
 
           {project.college && (
-            <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.24em] text-slate-400 mb-2">所属学院</p>
-              <p className="text-sm font-medium text-slate-900">{project.college}</p>
+            <div className="section-card p-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">所属学院</p>
+              <p className="text-sm font-bold text-slate-900">{project.college}</p>
             </div>
           )}
         </div>
@@ -101,7 +115,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-600"
+            className="tag-pill"
           >
             {tag}
           </span>
@@ -115,26 +129,26 @@ export default async function ProjectDetailPage({ params }: Props) {
       </div>
 
       {/* 正文 */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">📖 项目详情</h2>
-        <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed">
+      <div className="section-card p-6 mb-8">
+        <h2 className="text-lg font-black text-slate-900 mb-4">📖 项目详情</h2>
+        <div className="prose prose-sm max-w-none text-slate-700 whitespace-pre-wrap leading-relaxed">
           {project.description}
         </div>
       </div>
 
       {/* 团队成员 */}
       {project.members.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="section-card p-6 mb-8">
+          <h2 className="text-lg font-black text-slate-900 mb-4">
             👥 团队成员
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {project.members.map((member, i) => (
               <div
                 key={i}
-                className="flex flex-col items-center text-center p-3 rounded-lg bg-gray-50"
+                className="flex flex-col items-center text-center p-4 rounded-2xl bg-slate-50"
               >
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-xl mb-2">
+                <div className="w-12 h-12 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center text-xl mb-2">
                   {member.avatar ? (
                     <img
                       src={member.avatar}
@@ -154,7 +168,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                     href={member.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-blue-500 hover:underline mt-1"
+                  className="text-xs text-teal-600 hover:underline mt-1"
                   >
                     个人主页 →
                   </a>
@@ -167,8 +181,8 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       {/* 相关链接 */}
       {project.links.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">🔗 相关链接</h2>
+        <div className="section-card p-6 mb-8">
+          <h2 className="text-lg font-black text-slate-900 mb-4">🔗 相关链接</h2>
           <div className="space-y-2">
             {project.links.map((link, i) => (
               <a
@@ -176,7 +190,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block px-4 py-2.5 rounded-lg bg-gray-50 hover:bg-blue-50 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                className="block px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-teal-50 text-sm text-teal-700 hover:text-teal-900 transition-colors"
                 data-link-label={link.label}
               >
                 {link.label} →
@@ -191,6 +205,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         projectId={project.id}
         linkLabels={project.links.map((l) => l.label)}
       />
+      </div>
     </div>
   );
 }

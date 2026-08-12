@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
@@ -15,7 +16,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "社会实践项目展示",
-  description: "展示社会实践项目成果与团队风采",
+  description: "展示社会实践项目成果、团队风采与实践记录",
+  icons: {
+    icon: "/platform-mark.svg",
+  },
 };
 
 export default function RootLayout({
@@ -31,9 +35,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
         <Navbar />
         <main className="flex-1">{children}</main>
-        <footer className="text-center text-xs text-gray-400 py-6 border-t border-gray-100 bg-white">
-          社会实践项目展示 &copy; {new Date().getFullYear()}
-        </footer>
+        <Footer />
       </body>
     </html>
   );
