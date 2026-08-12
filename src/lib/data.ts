@@ -1,7 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { Redis } from "@upstash/redis";
-import { Project, ProjectInput } from "./types";
+import {
+  Project,
+  ProjectApplication,
+  ProjectApplicationInput,
+  ProjectInput,
+} from "./types";
 
 // ============================================================
 // 本地开发用 JSON 文件存储（没有 Redis 时自动回退）
@@ -9,6 +14,7 @@ import { Project, ProjectInput } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "projects.json");
+const APPLICATIONS_FILE = path.join(DATA_DIR, "applications.json");
 
 function ensureDataDir(): void {
   if (!fs.existsSync(DATA_DIR)) {
@@ -36,6 +42,25 @@ function writeToFile(projects: Project[]): void {
   fs.writeFileSync(DATA_FILE, JSON.stringify(projects, null, 2), "utf-8");
 }
 
+function readApplicationsFromFile(): ProjectApplication[] {
+  ensureDataDir();
+  if (!fs.existsSync(APPLICATIONS_FILE)) {
+    return [];
+  }
+  const raw = fs.readFileSync(APPLICATIONS_FILE, "utf-8");
+  const data = JSON.parse(raw);
+  return Array.isArray(data) ? data : (data.applications || []);
+}
+
+function writeApplicationsToFile(applications: ProjectApplication[]): void {
+  ensureDataDir();
+  fs.writeFileSync(
+    APPLICATIONS_FILE,
+    JSON.stringify(applications, null, 2),
+    "utf-8"
+  );
+}
+
 // ============================================================
 // Upstash Redis（仅在生产环境可用时使用）
 // ============================================================
@@ -61,6 +86,7 @@ function getRedis(): Redis {
 }
 
 const KV_KEY = "projects";
+const APPLICATIONS_KV_KEY = "project_applications";
 
 // ============================================================
 // 公共 API（自动选择存储后端）
@@ -229,6 +255,33 @@ export async function incrementLinkClick(
       (project.stats.linkClicks[linkLabel] || 0) + 1;
     writeToFile(projects);
   }
+}
+
+/** 提交项目入驻申请 */
+export async function createProjectApplication(
+  input: ProjectApplicationInput
+): Promise<ProjectApplication> {
+  const now = new Date().toISOString();
+  const application: ProjectApplication = {
+    ...input,
+    id: `application-${Date.now()}`,
+    status: "pending",
+    createdAt: now,
+  };
+
+  if (hasRedis()) {
+    const redis = getRedis();
+    const applications =
+      (await redis.get<ProjectApplication[]>(APPLICATIONS_KV_KEY)) || [];
+    applications.push(application);
+    await redis.set(APPLICATIONS_KV_KEY, applications);
+    return application;
+  }
+
+  const applications = readApplicationsFromFile();
+  applications.push(application);
+  writeApplicationsToFile(applications);
+  return application;
 }
 
 /** 生成唯一 URL slug */
